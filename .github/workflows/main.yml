@@ -1,0 +1,65 @@
+name: C Build and Run
+
+on:
+  push:
+    paths:
+      - '**/*.c'
+      - '**/*.yml'
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: "!contains(gitub.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install GCC
+      run: sudo apt-get install -y build-essential
+
+    # Compilation
+
+    - name: Compile the code
+      run: gcc EvenNOdd_Finder.c -o ENOF
+
+    # Run With Even Number
+
+    - name: Even Number Check
+      run: |
+        echo -e "Even Number Check:\n" > Test-Run-Result/Result.txt
+        echo "2" ./ENOF >> Test-Run-Result/Result.txt
+
+    # Runn with Odd Number
+
+    - name: Odd NUmber Check
+      run: |
+        echo -e "\n\nOdd Number Check:\n" >> Test-Run-Result/Result.txt
+        echo "3" ./ENOF >> Test-Run-Result/Result.txt
+
+    # Push Test Run Result to Repo
+
+    - name: Upload EvenNOdd Finder Test Run Results to Repo
+      uses: actions/upload-artifact@v4
+      with:
+        name: Push EvenNOdd Test-Run-Result
+        path: Test-Run-Result/Result.txt
+    - name: Push Result.txt to Repo
+      env:
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${TOKEN}@github.com/${{ github.repository }}
+          git add Test-Run-Result/Result.txt
+          git commit -m "Update Test Run Result output [skip ci]" || echo "No changes to commit"
+          git push
