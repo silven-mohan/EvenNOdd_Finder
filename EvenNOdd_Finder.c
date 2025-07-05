@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-main()
+int main()
 {
 	int a;
 	printf("Enter any number:");
@@ -15,4 +15,5 @@ main()
 	{
 		printf("%d is Odd", a);
 	}
+	return 0;
 }
