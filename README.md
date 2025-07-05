@@ -25,3 +25,9 @@ The program:
 ## 📂 File
 
 - `EvenNOdd_Finder.exe` - Windows executable (compiled from C source)
+
+## 📃License
+
+  See included [LICENSE](./LICENSE) file for more details.
+
+---
